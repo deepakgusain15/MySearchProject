@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MySearchProject | Master Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #1a1a1a; color: #fff; font-family: 'Inter', sans-serif; }
+        .master-card { background: #242424; border-radius: 20px; padding: 30px; margin-top: 20px; border: 1px solid #333; }
+        .engine-header { background: #333; padding: 10px 20px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #0d6efd; }
+        .result-item { position: relative; border-radius: 15px; overflow: hidden; background: #2d2d2d; transition: 0.3s; }
+        .result-item:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .score-pill { position: absolute; top: 10px; right: 10px; background: #28a745; padding: 2px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; }
+        .engine-google { border-left-color: #4285F4; } .engine-bing { border-left-color: #00809d; }
+        .engine-yandex { border-left-color: #ffcc00; } .engine-baidu { border-left-color: #2319dc; }
+    </style>
+</head>
+<body class="p-4">
+    <div class="container master-card">
+        <h1 class="text-center mb-5 fw-bold">🔍 GLOBAL META-SEARCH <span class="text-primary">PRO</span></h1>
+        
+        <form action="/upload" method="post" enctype="multipart/form-data" class="mb-5 text-center">
+            <input type="file" name="file" class="form-control w-50 d-inline-block me-2" required>
+            <button type="submit" class="btn btn-primary px-5">Deep Hash Search</button>
+        </form>
+
+        {% if uploaded_img %}
+        <div class="row mb-5">
+            <div class="col-md-4 mx-auto text-center">
+                <h5 class="text-secondary">Selected Query</h5>
+                <img src="{{ url_for('static', filename='uploads/' + uploaded_img) }}" class="img-fluid rounded border border-primary p-1 shadow-lg">
+            </div>
+        </div>
+
+        {% for engine, results in all_results.items() %}
+        <div class="engine-section mb-5">
+            <div class="engine-header engine-{{ engine|lower }}">
+                <h4 class="mb-0">{{ engine }} Similarity Results</h4>
+            </div>
+            <div class="row row-cols-1 row-cols-md-4 g-3">
+                {% for res in results %}
+                <div class="col">
+                    <div class="card result-item border-0">
+                        <div class="score-pill">{{ res.score }}% Match</div>
+                        <img src="{{ res.url }}" class="card-img-top" style="height: 180px; object-fit: cover;">
+                        <div class="card-body p-2 text-center">
+                            <small class="text-muted d-block">{{ res.label }}</small>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                    <p class="text-muted ms-3">No direct matches found by {{ engine }} Hashing Algorithm.</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</body>
+</html>
